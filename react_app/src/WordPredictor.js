@@ -14,13 +14,14 @@ export default class WordPredictor extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-        vocabularyText: "",
-        corpus: [],
-        predicates: {},
-        starters: [],
-        terminalPredicates: {},
-        results:[],
-        numberOfLetters: 5
+            prefix: "",
+            vocabularyText: "",
+            corpus: [],
+            predicates: {},
+            starters: [],
+            terminalPredicates: {},
+            results:[],
+            numberOfLetters: 5
         }
     }
         
@@ -123,16 +124,38 @@ export default class WordPredictor extends React.Component {
         }
     }
 
-    generate(letterCount) {
+    generate(letterCount, prefix) {
         console.log("==== generate " + letterCount + " letter word.")
         let resultLetterCount = 0
         let result = []
 
-        let rnd = Math.floor(Math.random() * this.state.starters.length)
+        let premise = null
 
-        let premise = this.state.starters[rnd]
+        if (prefix && this.state.starters.length > 0) {
+            let starti = Math.floor(Math.random() * this.state.starters.length)
+            let i = starti
+            do {
+                if (this.state.starters[i].startsWith(prefix)) {
+                    premise = this.state.starters[i]
+                    console.log("~~~ FOUND starter '" + premise + "' for prefix '" + prefix + "'")
+                    break
+                }
+                i++
+                if (i>=this.state.starters.length){
+                    i = 0
+                }
+            } while(i != starti)
+            if (!premise) {
+                console.log("~~~ starter for prefix '" + prefix + "' was not found")
+            }
+        } 
+        
+        if (premise == null){
+            let rnd = Math.floor(Math.random() * this.state.starters.length)
+            premise = this.state.starters[rnd]
+            console.log("starter: " + rnd + " -> '" + premise + "'" )
+        }
 
-        console.log("starter: " + rnd + " -> '" + premise + "'" )
         result.push(premise)
 
         while(resultLetterCount < letterCount) {
@@ -157,7 +180,7 @@ export default class WordPredictor extends React.Component {
                 break
             }
 
-            rnd = Math.random()
+            const rnd = Math.random()
             let followingLetters = Object.keys(closures)
             let candidate = null        
             console.log( (isTerminal ? "T " : "") + "thrshold: " + rnd + ", option count: " + followingLetters.length)
@@ -193,9 +216,9 @@ export default class WordPredictor extends React.Component {
         return result.join("")        
     }
 
-    onGenerate(count)
+    onGenerate(count, prefix)
     {
-        let newword = this.generate(count)
+        let newword = this.generate(count, prefix)
         console.log("new word (" + count + "): " + newword)
         this.state.results.push(newword)
         this.setState({results: this.state.results})
@@ -215,8 +238,9 @@ export default class WordPredictor extends React.Component {
                     {this.state.predicates != null
                     ?
                         <span>
+                            <input value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
                             <input value={this.state.numberOfLetters} onChange={(e) => this.setState({numberOfLetters: parseInt(e.target.value)})}/>
-                            <button onClick={()=> this.onGenerate(this.state.numberOfLetters)}>Generate!</button>
+                            <button onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</button>
                         </span>
                     :
                         null
