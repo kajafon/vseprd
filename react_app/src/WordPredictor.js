@@ -241,14 +241,17 @@ export default class WordPredictor extends React.Component {
                             <input value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
                             <input value={this.state.numberOfLetters} onChange={(e) => this.setState({numberOfLetters: parseInt(e.target.value)})}/>
                             <button onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</button>
+                            <button onClick={()=> this.setState({results: []})}>x</button>
                         </span>
                     :
                         null
                     } 
                 </div>
+                <h3 >
                 {
                     this.state.results.join(", ")
                 }
+                </h3>
             </div>
         );
     }
