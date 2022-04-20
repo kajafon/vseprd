@@ -223,39 +223,13 @@ export default class WordPredictor extends React.Component {
                 break
             }
 
-            const rnd = Math.random()
             let followingLetters = Object.keys(closures)
-            let candidate = null        
-            console.log( (isTerminal ? "T " : "") + "{" + premise + "} thrshold: " + rnd + ", option count: " + followingLetters.length)
-            let trialCount = 4
-            let stepSize = Math.max(1,followingLetters.length / trialCount)
-            let getStep = ()=> Math.round(Math.max(1, Math.random()*stepSize * 1.5))            
+            let i = Math.floor(Math.random()*followingLetters.length)
+            let letter = followingLetters[i]
+            console.log( (isTerminal ? "T " : "") + "{" + premise + "} -> '" + letter + "', option count: " + followingLetters.length)
+           
+            result += letter
 
-            creativity += followingLetters.length
-            stepsCount++
-
-            for (let i = Math.round(Math.random()*stepSize / 2); i < followingLetters.length; i += getStep()) {
-                let letter = followingLetters[i]
-                let val = closures[letter]
-                if (val >= rnd || candidate == null) {
-                    candidate = letter
-                    let decision = Math.random()
-                    if ( decision < 1/followingLetters.length) {
-                        console.log("- " + i + ")" + letter + ": " + val + ": cool. decision " + decision + " < threshold " + (1/followingLetters.length) + " WINNER!")
-                        break
-                    } else {
-                        console.log("- " + i + ")" + letter + ": " + val + ": cool. decision " + decision + " !< threshold " + (1/followingLetters.length) + " ... continue")
-                    }
-                } else {
-                    console.log("- " + i + ")" + letter + ": " + val + "... reject")
-                }                
-            }
-
-            if (candidate == null) {
-                throw new Error("no candidate")
-            }
-
-            result += candidate
             let indx = result.length - PREMIS_LENGTH
             if (indx < 0) {
                 indx = 0
