@@ -1,11 +1,14 @@
 {
+  "proxy": "http://localhost:8080",
   "name": "vseprd",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/index.js"
+    "server": "node server/index.js",
+    "client": "npm start --prefix client",
+    "build": "npm run build --prefix client"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,7 @@
     "antd": "^4.19.5",
     "create-react-app": "^5.0.1",
     "express": "^4.17.3",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "winston": "^3.7.2"
   }
 }
