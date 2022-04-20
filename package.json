@@ -20,5 +20,8 @@
     "fs": "^0.0.1-security",
     "react-scripts": "^5.0.1",
     "winston": "^3.7.2"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
