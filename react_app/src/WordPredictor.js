@@ -10,7 +10,7 @@ function hasValue(what) {
     return what != null && what != undefined
 }
 
-const PREMIS_LENGTH = 3
+const PREMIS_LENGTH = 4
 
 export default class WordPredictor extends React.Component {
     constructor(props) {
@@ -268,31 +268,37 @@ export default class WordPredictor extends React.Component {
     onGenerate(count, prefix)
     {
         this.setState({error: null})
+        let result = null
         for (let i=20; i>0; i--) {
-            let result = this.generate(count, prefix)
+            result = this.generate(count, prefix)
             // console.log("\n")
             let exist = this.state.corpus.findIndex((val, i) => val === result.result)
             if (exist >= 0) {
                 console.log(result.result + "---> is in corpus. skipping")
+                result = null
                 continue
             }
             exist = this.state.results.findIndex((val, i) => val.result === result.result)
             if (exist >= 0) {
                 console.log(result.result + "---> is already found. skipping")
+                result = null
                 continue
             }
             if (result.terminalQuality < 2) {
                 console.log("---> discarding '" + result.result + "' c:" + result.creativity + ", t:" + result.terminalQuality)
                 continue
             } 
-            
+
+            break
+        }
+
+        if (result) {
             console.log("---> new word (" + count + "): " + result.result)
             this.state.results.splice(0,0,result)
             this.setState({results: this.state.results})
-            return
+        } else {
+            this.setState({error: "Nothing found. Try again ... or something else."})
         }
-
-        this.setState({error: "Nothing found. Try again ... or something else."})
     }
     
     download(content, filename, contentType)
@@ -339,7 +345,7 @@ export default class WordPredictor extends React.Component {
                     <span style={{fontSize: "30px"}}>
                         {r.result}
                     </span>
-                    (c:{r.creativity}, t:{r.terminalQuality}, p:{r.prefixMatched.toString()})
+                    {/* (c:{r.creativity}, t:{r.terminalQuality}, p:{r.prefixMatched.toString()}) */}
                 </div>
             )
         }
@@ -418,9 +424,9 @@ export default class WordPredictor extends React.Component {
                                             <span style={{fontSize: "20px"}}>
                                                 {result.result}
                                             </span>
-                                            <span style={{marginLeft:"5px"}}>
+                                            {/* <span style={{marginLeft:"5px"}}>
                                                 (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
-                                            </span>
+                                            </span> */}
                                         </span>
                                     )
                                 })
