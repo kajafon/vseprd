@@ -1,0 +1,15 @@
+.active-word {
+    margin-right: 20px;
+    display:inline-block;
+    cursor: pointer;    
+}
+
+.active-word:hover {
+    text-decoration: underline;
+    background-color: beige;
+}
+
+.selected-words {
+    background: bisque;
+    padding: 10px;
+}

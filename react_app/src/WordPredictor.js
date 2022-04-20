@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
+import './wordpredictor.css'
 
 // import {Input, Button} from 'antd'
 
@@ -25,7 +26,8 @@ export default class WordPredictor extends React.Component {
             results:[],
             numberOfLetters: 5,
             showInput: false,
-            error: null
+            error: null,
+            selected: []
         }
     }
 
@@ -37,12 +39,33 @@ export default class WordPredictor extends React.Component {
         
     }
         
+    removeNonChars(input, forbidden){
+        let result = []
+
+        for (let i=0; i<input.length; i++) {
+            let isOk = true
+            for(let j=0; j<forbidden.length; j++) {
+                if (input[i] === forbidden[j]) {
+                    isOk = false
+                    break;
+                }
+            }
+
+            if (isOk) {
+                result.push(input[i])
+            }
+
+        }
+
+        return result.join('')
+    }
+
     process(vocabularyText) {
         console.clear()
         console.log("processing vocabulary...")
         console.log("--->" + vocabularyText.substring(0,300))
 
-        let voca = vocabularyText.replaceAll("."," ").replaceAll(",", " ").replaceAll("\n", " ").replaceAll("'", " ").replaceAll("!", " ")
+        let voca = this.removeNonChars(vocabularyText, "€@#$%^&*/?-–„“.,:;'\"{}[]()\n\r1234567890")
         let corpus = voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
 
         this.setState({vocabularyText: voca, corpus: corpus})
@@ -245,7 +268,7 @@ export default class WordPredictor extends React.Component {
     onGenerate(count, prefix)
     {
         this.setState({error: null})
-        for (let i=10; i>0; i--) {
+        for (let i=20; i>0; i--) {
             let result = this.generate(count, prefix)
             // console.log("\n")
             let exist = this.state.corpus.findIndex((val, i) => val === result.result)
@@ -264,23 +287,55 @@ export default class WordPredictor extends React.Component {
             } 
             
             console.log("---> new word (" + count + "): " + result.result)
-            this.state.results.push(result)
+            this.state.results.splice(0,0,result)
             this.setState({results: this.state.results})
             return
         }
 
         this.setState({error: "Nothing found. Try again ... or something else."})
     }
+    
+    download(content, filename, contentType)
+    {
+        if(!contentType) contentType = 'application/octet-stream';
+        var a = document.createElement('a');
+        var blob = new Blob([content], {'type':contentType});
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();        
+    }
 
+    onDownload() {
+        let content = []
+
+        for (let i=0; i<this.state.selected.length; i++) {
+            content.push(this.state.selected[i].result)
+        }
+
+        this.download(content.join(", "), "vseprd.txt")
+    }
+
+    onSelect(result) {
+
+        let i = this.state.selected.findIndex((r, i) => r.result === result.result)
+        if (i >= 0) {
+            console.log("already selected: " + result.result)
+            return
+        }
+
+        this.state.selected.push(result)
+        this.setState({selected: this.state.selected})
+    }
+    
     render() {
 
         let lastWordGui = null
         if (this.state.error) {
             lastWordGui = <h3 style={{color: "red"}}>{this.state.error}</h3>
         } else if (this.state.results.length > 0) { 
-            let r = this.state.results[this.state.results.length-1]    
+            let r = this.state.results[0]    
             lastWordGui = (    
-                <div>
+                <div className="active-word" onClick={()=>this.onSelect(r)}>
                     <span style={{fontSize: "30px"}}>
                         {r.result}
                     </span>
@@ -322,6 +377,25 @@ export default class WordPredictor extends React.Component {
                 <div>
                     { lastWordGui }
                     <br/>
+                    {
+                        this.state.selected.length > 0
+                        ?
+                            <div className='selected-words'>
+                                <div style={{fontSize: "12", color:"grey"}}>Your selected words:</div>
+                                <div>
+                                    {
+                                        this.state.selected.map((r,i) => {
+                                            return r.result + (i<this.state.selected.length-1 ? ", " : "")
+                                        })
+                                    }
+                                </div>
+                                <button onClick={()=>this.onDownload()}>Save</button>
+                            </div>
+                        : null
+                    }
+
+                    <br/>
+                    
                     <div>
                         {
                             this.state.results.length > 1
@@ -332,11 +406,12 @@ export default class WordPredictor extends React.Component {
                         }
                         {
                             this.state.results.map((result, i) => {
-                                if (i === this.state.results.length-1) {
+                                if (i === 0) {
                                     return null
                                 }
                                 return (
-                                    <span key={i} style={{marginRight: "20px"}}>
+                                    <span key={i} className="active-word" 
+                                        onClick={()=> this.onSelect(result)}>
                                         <span style={{fontSize: "20px"}}>
                                             {result.result}
                                         </span>
