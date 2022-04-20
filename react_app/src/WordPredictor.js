@@ -24,7 +24,7 @@ export default class WordPredictor extends React.Component {
             starters: [],
             terminalPredicates: {},
             results:[],
-            numberOfLetters: 5,
+            numberOfLetters: 8,
             showInput: false,
             error: null,
             selected: []
@@ -346,82 +346,86 @@ export default class WordPredictor extends React.Component {
 
         return (
             <div>
-                {this.state.showInput
-                    ?
-                    <div>
-                        <textarea rows="40" cols="100" value={this.state.vocabularyText} 
-                                onChange={(e)=> {
-                                    this.setState({vocabularyText: e.target.value})
-                                    this.process(e.target.value)
-                                }}
-                        />
-                        <button onClick={()=> this.setState({showInput:false})}>{"<"}</button>
-                    </div>
-                    : <button onClick={()=> this.setState({showInput:true})}>{">"}</button>
-                }
-                
-                <div>
-                    {this.state.predicates != null
-                    ?
-                        <span>
-                            <input value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
-                            <input value={this.state.numberOfLetters} onChange={(e) => this.setState({numberOfLetters: parseInt(e.target.value)})}/>
-                            <button onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</button>
-                            <button onClick={()=> this.setState({results: []})}>x</button>
-                        </span>
-                    :
-                        null
-                    } 
-                </div>
+                <h2 className="main-title">Všeprd - find new words</h2>
                 <br/>
                 <div>
-                    { lastWordGui }
-                    <br/>
-                    {
-                        this.state.selected.length > 0
+                    {this.state.showInput
                         ?
-                            <div className='selected-words'>
-                                <div style={{fontSize: "12", color:"grey"}}>Your selected words:</div>
-                                <div>
-                                    {
-                                        this.state.selected.map((r,i) => {
-                                            return r.result + (i<this.state.selected.length-1 ? ", " : "")
-                                        })
-                                    }
-                                </div>
-                                <button onClick={()=>this.onDownload()}>Save</button>
-                            </div>
-                        : null
+                        <div className='content'>
+                            <textarea rows="40" cols="100" value={this.state.vocabularyText} 
+                                    onChange={(e)=> {
+                                        this.setState({vocabularyText: e.target.value})
+                                        this.process(e.target.value)
+                                    }}
+                            />
+                            <button onClick={()=> this.setState({showInput:false})}>{"<"}</button>
+                        </div>
+                        : <button onClick={()=> this.setState({showInput:true})}>{">"}</button>
                     }
-
-                    <br/>
                     
+                    <div className='content'>
+                        {this.state.predicates != null
+                        ?
+                            <span>
+                                <input value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
+                                <input value={this.state.numberOfLetters} onChange={(e) => this.setState({numberOfLetters: parseInt(e.target.value)})}/>
+                                <button onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</button>
+                                <button onClick={()=> this.setState({results: []})}>x</button>
+                            </span>
+                        :
+                            null
+                        } 
+                    </div>
+                    <br/>
                     <div>
+                        { lastWordGui }
+                        <br/>
                         {
-                            this.state.results.length > 1
+                            this.state.selected.length > 0
                             ?
-                                <div style={{fontSize: "12", color:"grey"}}>Previous results:</div>
-                            :
-                                null
+                                <div className='selected-words'>
+                                    <div style={{fontSize: "12", color:"grey"}}>Your selected words:</div>
+                                    <div>
+                                        {
+                                            this.state.selected.map((r,i) => {
+                                                return r.result + (i<this.state.selected.length-1 ? ", " : "")
+                                            })
+                                        }
+                                    </div>
+                                    <button onClick={()=>this.onDownload()}>Save</button>
+                                </div>
+                            : null
                         }
-                        {
-                            this.state.results.map((result, i) => {
-                                if (i === 0) {
-                                    return null
-                                }
-                                return (
-                                    <span key={i} className="active-word" 
-                                        onClick={()=> this.onSelect(result)}>
-                                        <span style={{fontSize: "20px"}}>
-                                            {result.result}
+
+                        <br/>
+                        
+                        <div>
+                            {
+                                this.state.results.length > 1
+                                ?
+                                    <div style={{fontSize: "12", color:"grey"}}>Previous results:</div>
+                                :
+                                    null
+                            }
+                            {
+                                this.state.results.map((result, i) => {
+                                    if (i === 0) {
+                                        return null
+                                    }
+                                    return (
+                                        <span key={i} className="active-word" 
+                                            onClick={()=> this.onSelect(result)}>
+                                            <span style={{fontSize: "20px"}}>
+                                                {result.result}
+                                            </span>
+                                            <span style={{marginLeft:"5px"}}>
+                                                (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
+                                            </span>
                                         </span>
-                                        <span style={{marginLeft:"5px"}}>
-                                            (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
-                                        </span>
-                                    </span>
-                                )
-                            })
-                        }
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

@@ -13,3 +13,12 @@
     background: bisque;
     padding: 10px;
 }
+
+.main-title {
+    color: grey;
+    text-align: center;
+}
+
+.content {
+    text-align: center;
+}
