@@ -2,18 +2,18 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import './wordpredictor.css';
-
-import {Input, Button} from 'antd'
+import {Input, Button, Tooltip, Space, Typography, Modal} from 'antd'
 
 
 function hasValue(what) {
     return what !== null && what !== undefined
 }
 
-const PREMIS_LENGTH = 4
+const PREMIS_LENGTH = 3
 
 
 export default class WordPredictor extends React.Component {
+
     constructor(props) {
         super(props)
         console.log("constructor")
@@ -160,6 +160,10 @@ export default class WordPredictor extends React.Component {
     }
 
     generate(letterCount, prefix) {
+        if (this.state.starters.length === 0) {
+            console.log("empty corpus. not generating")
+            return null
+        }
         console.log("\n==== generate " + letterCount + " letter word.")
         let result = ""
    
@@ -170,7 +174,7 @@ export default class WordPredictor extends React.Component {
         let premise = null
         let prefixMatched = true
 
-        if (prefix && this.state.starters.length > 0) {
+        if (prefix) {
             let starti = Math.floor(Math.random() * this.state.starters.length)
             let i = starti
             do {
@@ -186,6 +190,7 @@ export default class WordPredictor extends React.Component {
             } while(i !== starti)
             if (!premise) {
                 console.log("~~~ starter for prefix '" + prefix + "' was not found")
+                return null
             }
         } 
         
@@ -241,12 +246,20 @@ export default class WordPredictor extends React.Component {
 
     onGenerate(count, prefix)
     {
+        if (this.state.starters.length === 0) {
+            this.setState({error: "Nie je podľa čoho slová vytvoriť. Vlož nejaký text."})
+            return
+        }
+
         this.setState({error: null})
         let result = null
         for (let i=20; i>0; i--) {
             result = this.generate(count, prefix)
-            // console.log("\n")
-            let exist = this.state.corpus.findIndex((val, i) => val === result.result)
+            if (result === null) {
+                break
+            }
+            const finder = function(val, i) { return val === result.result }
+            let exist = this.state.corpus.findIndex(finder)
             if (exist >= 0) {
                 console.log(result.result + "---> is in corpus. skipping")
                 result = null
@@ -271,7 +284,7 @@ export default class WordPredictor extends React.Component {
             this.state.results.splice(0,0,result)
             this.setState({results: this.state.results})
         } else {
-            this.setState({error: "Nothing found. Try again ... or something else."})
+            this.setState({error: "Nič som tentoraz nenašiel. Skús znova, alebo zmeň zadanie."})
         }
     }
     
@@ -306,7 +319,13 @@ export default class WordPredictor extends React.Component {
         this.state.selected.push(result)
         this.setState({selected: this.state.selected})
     }
-    
+    onCharNumChanged(val) {
+        let num = parseInt(val)
+        if (isNaN(num)) {
+            num = 0
+        }
+        this.setState({numberOfLetters: num})
+    }
     render() {
 
         let lastWordGui = null
@@ -326,31 +345,74 @@ export default class WordPredictor extends React.Component {
 
         return (
             <div>
-                <h2 className="main-title">Všeprd - find new words</h2>
                 <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <Typography.Title className="center title" level={1}>VŠEPRD</Typography.Title>
+                <div className='center'>
+                    <Typography.Title type="secondary" className="center description" level={5}>
+                        Nájdi nové slová podľa textu. Text, podľa kotrého sa slová tvoria už je zadaný
+                        a hneď si to možeš vyskúšať, ale môžeš vložiť aj svoj vlastný. Tlačidlom so 
+                        zobáčikom odkryješ vstupný formulár.
+                    </Typography.Title>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                {/* <Modal 
+                    visible={this.state.showProcessed}                     
+                    cancelButtonProps={{ style: { display: 'none' } }}
+                    onOk={()=> this.setState({showInput:false, showProcessed:false})}
+                >
+                    Mám to.
+                </Modal> */}
                 <div>
                     {this.state.showInput
                         ?
-                        <div className='content'>
-                            <textarea rows="40" cols="100" value={this.state.vocabularyText} 
+                        <div className='center'>
+                            
+                            <Tooltip title="hide text corpus input">
+                                <Button onClick={()=> this.setState({showInput:false})}>{"<"}</Button>
+                            </Tooltip>
+                            {
+                                this.state.showInput && this.state.showProcessed
+                                ?
+                                    <div className='pale-text some-space left-align'>Mám to. Môžeš generovať slová.</div>
+                                : null
+                            }
+                            <Input.TextArea className="some-space" rows="20" cols="10" value={this.state.vocabularyText} 
                                     onChange={(e)=> {
                                         this.setState({vocabularyText: e.target.value})
                                         this.process(e.target.value)
+                                        if (this.state.showInput) {
+                                            this.setState({showProcessed: true})
+                                        }
                                     }}
                             />
-                            <button onClick={()=> this.setState({showInput:false})}>{"<"}</button>
                         </div>
-                        : <button onClick={()=> this.setState({showInput:true})}>{">"}</button>
+                        : null
                     }
                     
-                    <div className='content'>
+                    <div className='center'>
                         {this.state.predicates != null
                         ?
                             <span>
-                                <input value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
-                                <input value={this.state.numberOfLetters} onChange={(e) => this.setState({numberOfLetters: parseInt(e.target.value)})}/>
-                                <button onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</button>
-                                <button onClick={()=> this.setState({results: []})}>x</button>
+                                <Space>
+                                    {
+                                      !this.state.showInput   
+                                      ?                             
+                                        <Tooltip title="show text corpus input">
+                                            <Button onClick={()=> this.setState({showInput:true, showProcessed: false})}>{">"}</Button>
+                                        </Tooltip>
+                                      : null
+                                    }
+                                    <Input placeholder="Začiatok slova ..." className="input-main" value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
+                                    <Input prefix="Počet znakov" className="input-main" value={this.state.numberOfLetters} onChange={(e) => this.onCharNumChanged(e.target.value)}/>
+                                    <Button type="primary" onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Generate!</Button>
+                                </Space>
                             </span>
                         :
                             null
@@ -358,21 +420,27 @@ export default class WordPredictor extends React.Component {
                     </div>
                     <br/>
                     <div>
+                        <div className='center'>
                         { lastWordGui }
+                        </div>
                         <br/>
                         {
                             this.state.selected.length > 0
                             ?
-                                <div className='selected-words'>
-                                    <div style={{fontSize: "12", color:"grey"}}>Your selected words:</div>
-                                    <div>
-                                        {
-                                            this.state.selected.map((r,i) => {
-                                                return r.result + (i<this.state.selected.length-1 ? ", " : "")
-                                            })
-                                        }
+                                <div className='some-space'>
+                                    <Typography.Title type="secondary" level={5} className="bottom-space">
+                                       Váš výber:
+                                    </Typography.Title>
+                                    <div className='selected-words'>
+                                        <div className='bottom-space'>
+                                            {
+                                                this.state.selected.map((r,i) => {
+                                                    return r.result + (i<this.state.selected.length-1 ? ", " : "")
+                                                })
+                                            }
+                                        </div>
+                                        <Button size="small" onClick={()=>this.onDownload()}>Ulož</Button>
                                     </div>
-                                    <button onClick={()=>this.onDownload()}>Save</button>
                                 </div>
                             : null
                         }
@@ -383,27 +451,31 @@ export default class WordPredictor extends React.Component {
                             {
                                 this.state.results.length > 1
                                 ?
-                                    <div style={{fontSize: "12", color:"grey"}}>Previous results:</div>
+                                    <div className='some-space'>
+                                        {/* <Typography.Title type="secondary" level={5} className="bottom-space">
+                                            :
+                                        </Typography.Title> */}
+                                        {
+                                            this.state.results.map((result, i) => {
+                                                if (i === 0) {
+                                                    return null
+                                                }
+                                                return (
+                                                    <span key={i} className="active-word" 
+                                                        onClick={()=> this.onSelect(result)}>
+                                                        <span style={{fontSize: "20px"}}>
+                                                            {result.result}
+                                                        </span>
+                                                        {/* <span style={{marginLeft:"5px"}}>
+                                                            (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
+                                                        </span> */}
+                                                    </span>
+                                                )
+                                            })
+                                        }
+                                    </div>    
                                 :
                                     null
-                            }
-                            {
-                                this.state.results.map((result, i) => {
-                                    if (i === 0) {
-                                        return null
-                                    }
-                                    return (
-                                        <span key={i} className="active-word" 
-                                            onClick={()=> this.onSelect(result)}>
-                                            <span style={{fontSize: "20px"}}>
-                                                {result.result}
-                                            </span>
-                                            {/* <span style={{marginLeft:"5px"}}>
-                                                (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
-                                            </span> */}
-                                        </span>
-                                    )
-                                })
                             }
                         </div>
                     </div>

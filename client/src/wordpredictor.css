@@ -10,8 +10,9 @@
 }
 
 .selected-words {
-    background: bisque;
+    background: rgba(255,240, 200, 0.8);
     padding: 10px;
+    border-radius: 5px;
 }
 
 .main-title {
@@ -19,6 +20,40 @@
     text-align: center;
 }
 
-.content {
+.center {
     text-align: center;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.input-main {
+    max-width: 150px;
+}
+
+.some-space {
+    margin: 10px;
+}
+
+.pale-text {
+    color: grey;
+}
+
+.bottom-space {
+    margin-bottom: 10px;
+}
+
+.description {
+    max-width: 400px;
+    margin: 0px !important;
+    display: inline-block;
+}
+
+body {
+    background: aqua;
+}
+
+.title {
+    color: rgb(166, 163, 147) !important;
 }
