@@ -1,21 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import './wordpredictor.css'
+import './wordpredictor.css';
 
-// import {Input, Button} from 'antd'
+import {Input, Button} from 'antd'
 
 
 function hasValue(what) {
-    return what != null && what != undefined
+    return what !== null && what !== undefined
 }
 
 const PREMIS_LENGTH = 4
 
+
 export default class WordPredictor extends React.Component {
     constructor(props) {
         super(props)
-        
+        console.log("constructor")
         this.state = {
             prefix: "",
             vocabularyText: "",
@@ -32,7 +33,7 @@ export default class WordPredictor extends React.Component {
     }
 
     componentDidMount() {
-        
+        console.log("... component did mount")
         fetch("corpus")
             .then(response => response.json())
             .then((result)=>this.process(result.corpus))
@@ -61,18 +62,17 @@ export default class WordPredictor extends React.Component {
     }
 
     process(vocabularyText) {
-        console.clear()
         console.log("processing vocabulary...")
-        console.log("--->" + vocabularyText.substring(0,300))
+        // console.log("--->" + vocabularyText.substring(0,300))
 
         let voca = this.removeNonChars(vocabularyText, "€@#$%^&*/?-–„“.,:;'\"{}[]()\n\r1234567890")
         let corpus = voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
 
         this.setState({vocabularyText: voca, corpus: corpus})
 
-        for(let i=0; i<corpus.length; i++) {
-            console.log("-->\"" + corpus[i] + "\"")
-        }
+        // for(let i=0; i<corpus.length; i++) {
+        //     console.log("-->\"" + corpus[i] + "\"")
+        // }
 
         let predicates = {}
         let starters = []
@@ -112,7 +112,7 @@ export default class WordPredictor extends React.Component {
                 }
 
                 /* terminals */
-                if (i == word.length-1) {
+                if (i === word.length-1) {
                     let closureCounts = terminalPredicates[premise]
                     if (!hasValue(closureCounts)) {
                         terminalPredicates[premise] = closureCounts = {}
@@ -183,7 +183,7 @@ export default class WordPredictor extends React.Component {
                 if (i>=this.state.starters.length){
                     i = 0
                 }
-            } while(i != starti)
+            } while(i !== starti)
             if (!premise) {
                 console.log("~~~ starter for prefix '" + prefix + "' was not found")
             }
@@ -202,7 +202,7 @@ export default class WordPredictor extends React.Component {
         while(result.length < letterCount) {
             let closures = null 
             let isTerminal = false
-            if (result.length == letterCount - 1)
+            if (result.length === letterCount - 1)
             {
                 isTerminal = true
                 closures = this.state.terminalPredicates[premise]    

@@ -6,10 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import WordPredictor from './WordPredictor';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+console.log("index.js")
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <WordPredictor />
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
