@@ -353,7 +353,7 @@ export default class WordPredictor extends React.Component {
                 <Typography.Title className="center title" level={1}>VŠEPRD</Typography.Title>
                 <div className='center'>
                     <Typography.Title type="secondary" className="center description" level={5}>
-                        Nájdi nové slová podľa textu. Text, podľa kotrého sa slová tvoria už je zadaný
+                        Vygeneruj si nové slová podľa textu. Text, podľa ktorého sa slová tvoria už je zadaný
                         a hneď si to možeš vyskúšať, ale môžeš vložiť aj svoj vlastný. Tlačidlom so 
                         zobáčikom odkryješ vstupný formulár.
                     </Typography.Title>
