@@ -173,35 +173,22 @@ export default class WordPredictor extends React.Component {
 
         let premise = null
         let prefixMatched = true
-
-        if (prefix) {
-            let starti = Math.floor(Math.random() * this.state.starters.length)
-            let i = starti
-            do {
-                if (this.state.starters[i].startsWith(prefix)) {
-                    premise = this.state.starters[i]
-                    console.log("~~~ FOUND starter '" + premise + "' for prefix '" + prefix + "'")
-                    break
-                }
-                i++
-                if (i>=this.state.starters.length){
-                    i = 0
-                }
-            } while(i !== starti)
-            if (!premise) {
-                console.log("~~~ starter for prefix '" + prefix + "' was not found")
-                return null
-            }
-        } 
         
-        if (premise == null){
+        if (prefix) {
+            result = prefix
+            if (prefix.length > PREMIS_LENGTH) {
+                premise = prefix.substring(prefix.length - PREMIS_LENGTH)
+            } else {
+                premise = prefix
+            }
+        } else {
             let rnd = Math.floor(Math.random() * this.state.starters.length)
             premise = this.state.starters[rnd]
             prefixMatched = false
             console.log("starter: " + rnd + " -> '" + premise + "'" )
+            result = premise
         }
 
-        result = premise
         stepsCount++
 
         while(result.length < letterCount) {
@@ -360,15 +347,6 @@ export default class WordPredictor extends React.Component {
                 </div>
                 <br/>
                 <br/>
-                <br/>
-                <br/>
-                {/* <Modal 
-                    visible={this.state.showProcessed}                     
-                    cancelButtonProps={{ style: { display: 'none' } }}
-                    onOk={()=> this.setState({showInput:false, showProcessed:false})}
-                >
-                    Mám to.
-                </Modal> */}
                 <div>
                     {this.state.showInput
                         ?
