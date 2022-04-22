@@ -66,6 +66,8 @@ export default class WordPredictor extends React.Component {
 
             if (isOk) {
                 result.push(input[i])
+            } else {
+                result.push(" ")
             }
 
         }
@@ -147,7 +149,7 @@ export default class WordPredictor extends React.Component {
 
         this.setState({predicates: predicates, starters: starters, terminalPredicates: terminalPredicates})
 
-        console.log("done. node count: " + firstLevelNodeCount + ", second level node count:" + secondLevelNodeCount + ", starters count: " + starters.length)
+        console.log("done. src word count:" + corpus.length + ", node count: " + firstLevelNodeCount + ", second level node count:" + secondLevelNodeCount + ", starters count: " + starters.length)
     }
 
     normalize(predicates) {
