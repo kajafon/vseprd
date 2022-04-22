@@ -1,0 +1,441 @@
+
+Search on The Workplace…
+The Workplace Stack Exchange is a question and answer site for members of the workforce navigating the professional setting. It only takes a minute to sign up.
+
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+The Workplace
+Home
+PUBLIC
+Questions
+Tags
+Users
+Unanswered
+TEAMS
+Stack Overflow for Teams – Start collaborating and sharing organizational knowledge. 
+What categories of projects outside of embedded are there for a C++ developer nowadays? [closed]
+Asked 17 days ago
+Modified 15 days ago
+Viewed 15k times
+
+24
+
+
+5
+Closed. This question is off-topic. It is not currently accepting answers.
+Want to improve this question? Update the question so it's on-topic for The Workplace Stack Exchange.
+
+Closed 14 days ago.
+
+A bit of context:
+
+I have experience in C/C++ development (mainly on the "old" C++03) in a Linux-based embedded environment in telecom equipment, but I don't want to continue working in the embedded industry (I'll leave the reasons behind the scenes). And from here I see the fading of interest in С/C++ outside of embedded (perhaps this is the wrong feeling).
+
+Now I am facing a choice of a further career path: either I will further develop my C++ experience, study modern standards and look for a job outside embedded, or move to another area of software development (I'm looking towards iOS development). In addition, I have no experience in developing software for Windows.
+
+Questions:
+
+What kind of non-embedded C++ projects can I potentially find work on in the modern world?
+
+Are there any product-based companies that use C++ as the main language for their projects (ideally if it is an end user product)?
+
+software-industry
+job-search
+career-development
+Share
+Improve this question
+Follow
+edited Apr 5 at 14:22
+user avatar
+Peter Mortensen
+1,01311 gold badge77 silver badges77 bronze badges
+asked Apr 4 at 7:44
+user avatar
+xtheandrew
+38911 gold badge11 silver badge44 bronze badges
+8
+really depends on the companies in your community. C++ isn't "the new fancy thing" everyone does, but there are companies around who still use it. My company uses it for Embedded and Windows based Applications. Qt is quite popular for UI applications, and it's written in C++. I suppose companies working with Linux will also use it. – 
+jwsc
+ Apr 4 at 7:52
+3
+You can go to LinkedIn, and search for jobs with the keyword "C++". You will see that there are stills lots of C++ jobs in the areas of financial industry, game development, Cryptocurrency trading, and many more. – 
+Job_September_2020
+ Apr 4 at 17:24 
+4
+To what extent are you leaving "embedded" behind? There are a lot of companies out there that still use C++ because it is closer to the hardware than other languages (e.g. Java). The video game industry probably has a lot of C/C++ development positions, and they probably want you to know how to best optimize the code for the hardware. – 
+zmike
+ Apr 4 at 21:31
+3
+Software Engineering does not accept career advice questions: Are career questions acceptable or not? - "Questions seeking career or education advice are off topic. They are only meaningful to the asker and do not generate lasting value for the broader programming community" – 
+Peter Mortensen
+ Apr 5 at 14:17 
+2
+It is (was?) also mostly negative on this site: Are career path questions off topic?, Where can I ask a question related to changing career?, and Are questions about what career field one could go into on-topic for The Workplace?. – 
+Peter Mortensen
+ Apr 5 at 14:37
+Show 3 more comments
+12 Answers
+Sorted by:
+
+Highest score (default)
+
+44
+
+C/C++ is far from a "dead" language today. There are many companies still using it for both new and legacy applications. It's not "cool" or "cutting edge" but I continue to see job postings for such developers in my inbox.
+
+You could also consider expanding your horizons to one or more of the closely related languages that are in wide use today. Java, Go, and C#/.NET come to mind. Today many developers consider Rust to be C's "heir apparent".
+
+It's my experience that software developers are not defined by the languages they work in but their ability to solve business problems. A skilled developer should be able to apply what is difficult to learn (problem solving) using different things that are relatively easy to learn, such as a specific programming language.
+
+What kind of non-embedded C++ projects can I potentially find work on in the modern world?
+
+Start browsing the job postings for jobs in C/C++ development. These days there is a definite trend for many of these to be labelled "remote" so the old geographic limitations apply less than they used to. Look for opportunities that interest you regardless of the languages they are listing. Some may filter you out just because you haven't listed a specific language on your CV but others may be more open-minded. But in the interim, start expanding your skill set on your own.
+
+Are there any product based companies that use C++ as the main language for their projects (ideally if it is an end-user product)?
+
+Companies don't often advertise "hey we use XXX to build our product" but you can learn a lot by going viewing the "Careers" listing at a company you are interested in and see what languages they are looking for.
+
+Share
+Improve this answer
+Follow
+answered Apr 4 at 11:25
+user avatar
+jwh20
+5,48455 gold badges1414 silver badges2020 bronze badges
+6
+This answer is effectively "go find a business and look for yourself" Maybe giving an example of what those jobs might look like could prove to be more useful. – 
+TankorSmash
+ Apr 4 at 19:28 
+5
+Just an opinion: Similarity of syntax does not equal a headstart in experience. And "environment" tools also require experience (and often differ between languages). So yeah, look at new languages (also suggested by another answer), but realize it will be a learning curve. I started in C, then did Java for many years (JRE vs binary), and now got into a full stack job where in reality 99.9% is frontend (JavaScript, Node, Angular). My experience in Clojure (which incidentally took some inspiration from JS but has a completely different syntax) helped me more than Java (or C) did. – 
+frIT
+ Apr 5 at 10:44
+1
+In the past 28 years, I have gone from mainframe Cobol/ADABAS (2 years) to nearly 20 years of Microsoft stack (desktop then web, Oracle then SQL Server then back and forth) and more recently switched to NodeJs/React/Mongo/Azure Cloud on Linux. That switch took me a few months self training to get to the point of landing a job, and a coupla years to get pretty comfortable. I also simultaneously switched from English to German, - the German took WAY longer than the tech stack (over a year!). Changing tech stacks is not so very huge a thing, but it takes a few years to catch up to yourself. – 
+kpollock
+ Apr 5 at 13:38
+4
+Expanding @frIT 's comment: IMO nowadays learning a language is relatively easy and, after some initial steps, almost useless; the "big thing" now is to learn frameworks and/or stacks, as those are the ones that will determine what can and can't be done in your application/project, as well as what will be implemented with ease and what will require more work to do – 
+Josh Part
+ Apr 5 at 17:43
+1
+Some programmers would describe Clojure as a LISP variant rather than "took some inspiration from JS" – 
+ojs
+ Apr 6 at 9:20
+Show 1 more comment
+
+31
+
+Game development. There are many commercial game engines written in C++ and I believe it's still the language of choice for most "serious" game engines.
+
+Some big examples are Unity, Unreal Engine and Godot. Note that the scripting engines these use are not normally in C++, but the actually core of the engine itself will be for speed.
+
+Machine learning. I think most of the big libraries are written in C++ and then have wrapper libraries for Python, math, etc. Examples here are TensorFlow, Cafee and Vowpal.
+
+Operating systems. The example here is Windows. While not full in C++, there is a lot of it as well as C which I'm sure you'd be comfortable with. If you'd be able to show work on C then I'm sure there are companies out there looking for someone to build Linux and Windows device drivers and such like.
+
+Database engines. I could be wrong, but many of the big database engines use C/C++. Examples here are PostgreSQL and MongoDB.
+
+I think there are many jobs for the languages. I can't list them all here, but the main part would be companies that are looking that require high performance.
+
+Good luck in your search!
+
+Share
+Improve this answer
+Follow
+edited Apr 6 at 7:11
+user avatar
+Peter Mortensen
+1,01311 gold badge77 silver badges77 bronze badges
+answered Apr 4 at 20:36
+user avatar
+Dave3of5
+3,5311212 silver badges1717 bronze badges
+6
+Wanted to mention game engine development too. But from multiple reports around there, gamedev is not a happy place: all the overtime and bad deadlines over and over again. – 
+Oleg Lobachev
+ Apr 4 at 22:55
+12
+As an ex-game developer, I support @OlegLobachev's comment. The work culture difference between embedded systems and game development is about as wide as can be, I think. E.g., making sure stuff is right vs. pushing out lots of shaky code quickly b/c it's just entertainment and can be fixed later, maybe. – 
+Daniel R. Collins
+ Apr 5 at 2:01
+1
+Game dev project have their issues & I agree that it's leagues apart from embedded systems, having worked in both. It's super important to do your research for the company in games & make sure you're not walking into something that's going to run you into the ground. Local dev meetups are great to figure out how employees feel about their companies in a slightly more honest way than glassdoor or some PR spiel for example. – 
+Yann
+ Apr 5 at 6:30
+1
+Worked in a games company. Massively multiplayer online game (MMO). Game engine and dev utils written and maintained in C++. Big codebase. – 
+vikingsteve
+ Apr 6 at 8:17
+3
+Embedded guy here, can confirm; we just got a new guy on a defence project who was fleeing gaming :-) Also, OP, you need C++ 2014 as a minimum these days, if only for smart pointers. – 
+Mawg says reinstate Monica
+ Apr 6 at 12:36
+Show 1 more comment
+
+26
+
+There are several markets out there where C++ is used. I will divide them in two categories but it's purely arbitrary.
+
+Legacy: Project or whole company where C++ exists. Other languages or stacks could probably solve the same issues cheaper in the long run but the initial investment cost, fear of change and some degree of sunk cost fallacy give a strong inertia.
+Technology fit: Some industries rely on C++ for it's strong points (allegedly or proven) like performances, low level capabilities and so on. It's the case for the video game industry (like Unreal Engine), financial and banking industry or industries with heavy simulation (e.g. https://github.com/AntaresSimulatorTeam/). Like above maybe some technologies could do the same thing (like Rust) but C++ is proven and the number of developers knowing C++ is large and so companies don't risk not finding new developers to maintain or start new projects.
+Share
+Improve this answer
+Follow
+edited Apr 5 at 12:06
+user avatar
+Glorfindel
+2,91755 gold badges2424 silver badges3333 bronze badges
+answered Apr 4 at 13:41
+user avatar
+JayZ
+4,8751313 silver badges2525 bronze badges
+I wouldn't use the term "legacy" for the first thing, there's a massive number of libraries that are C/C++ only, or were only ported to other languages as an afterthought, including closed source libraries (that can't be ported) and code that's "good enough". Maybe that's "inertia" but it's a lot deeper than just "we prefer the thing we already know", it's decades of work put in thousands of projects (FOSS and otherwise). It's very hard for a new language to compete with that unless it's in an industry that throws everything away every few years. – 
+jrh
+ Apr 6 at 19:27 
+Add a comment
+
+13
+
+Let's make one thing clear: You can't live with one single language forever. You will have to learn other and new languages over the years. Even if you stay in the same area. For example, if you wrote MacOS software, you had to learn C, C++, Objective-C, Swift in that order. For Android development you should be on your second or third language now. Same in other areas. You'll need a bit of bash or zsh, you'd have switched from Perl to Python for some side jobs. It's continuous learning or you get old in the tooth.
+
+And then you look at an area that you like, and that has a long term future. Mobile development has been fine for me for the last 14 or 15 years and will last me as long as I retire; if you are younger, it will last for a while, probably 15 years, giving you a chance to become really good at it, and then something else will come up, nobody knows yet what it is. Not interested in AI as long as the "I" is missing.
+
+Share
+Improve this answer
+Follow
+answered Apr 4 at 22:40
+user avatar
+gnasher729
+148k7070 gold badges275275 silver badges453453 bronze badges
+2
+You missed 68K asm and Pascal for MacOS, C was a Johnny-come-lately – 
+jmoreno
+ Apr 5 at 0:24
+"You can't live with one single language forever. " - bold statement. I switched from purely C++ to purely C# in 2012 and have never looked back. I've been earning 2-3x more using C# than C++, and refuse to look at any other language (my contracts specifically forbid it). – 
+Neil
+ Apr 5 at 8:04
+7
+Actually, I do Fortran for a living, in 2022 (and so do lots of other people). Had I started with it in the 70's, I could have comfortably lived with one single language for a whole career and more. (And then there's COBOL.) – 
+TooTea
+ Apr 5 at 10:27
+Absolutely. Fashion and technology changes, and there is no reason to stick to an old language. Part of the fun of Software Engineering is learning a new language now and then, new tools, new hardware... It belongs to the job description. It's not hard to learn a new one, they are all much of a muchness when it gets down to it. – 
+RedSonja
+ Apr 5 at 13:22
+1
+"C was a Johnny-come-lately" - compared with Pascal for MacOS??!! [citation needed] – 
+Mawg says reinstate Monica
+ Apr 6 at 12:37
+Show 3 more comments
+
+10
+
+At the start of my career I did C++ on some flavor of Unix for business systems. Using things like CORBA and ASN.1 various applications could communicate and run fast and reliably. At the time there was a massive difference in running on a Windows based system and something like a SPARC station in terms of reliability and speed.
+
+These types of systems have been replaced (mostly) with either Java/Spring or C#. For you, picking up Java would be a breeze although Spring will have a bit of a learning curve. Using these two tools so much of the work is done for you and they are also very powerful. The variety of apps that run on a Java/Spring platform kind of blows my mind and swaping out sub-components such as front end or back end technologies is fairly painless.
+
+Having said all that, many defense industries still use C++ but many of them are on a Visual Studio based code. For me there was a vast difference between Unix based C++ and Visual Studio.
+
+I would suggest one of two options either learn Java/Spring and look for work in that area, or look for a job in defense that still uses C++.
+
+IMHO going from embedded C++ to IOS is a massive jump and one that you may not like (I would not). My saying is that "if you know my software is running, then I have done something horribly wrong". I hate doing the UI part of app development and a lot of mobile development is UI. Many mobile apps are just front ends to a Spring/Java server layer.
+
+Share
+Improve this answer
+Follow
+answered Apr 4 at 15:52
+user avatar
+Pete B.
+7,82422 gold badges1818 silver badges2727 bronze badges
+Add a comment
+
+5
+
+I don't see it mentioned anywhere else but low latency finance and trading tends to like C++ and particularly people with an embedded systems backgrounds. Many companies have legacy pricing engines that are built in C++ and it offers the best performance characteristics for the application. I know plenty of companies that would pay top dollar for an experienced C++ dev, and would then probably help you learn new languages once you join as well.
+
+Share
+Improve this answer
+Follow
+answered Apr 5 at 15:09
+user avatar
+ford prefect
+15144 bronze badges
+Add a comment
+
+5
+
+High-frequency trading uses C++ for its performance. Bjarne Stroustrup, the inventor of C++, works for Morgan Stanley, that is no coincedence.
+
+Share
+Improve this answer
+Follow
+answered Apr 5 at 15:09
+user avatar
+usr1234567
+1,43377 silver badges1717 bronze badges
+Add a comment
+
+3
+
+I've been working in the medical device area, in embedded systems, for a long time. We also develop test fixtures and other tools that run on workstations. These are programmed in Java, C#, and C++.
+
+For example, one custom tool is for a compiler (of a proprietary language). Our product produces a lot of data. We also have desktop applications, written in C++, that perform data analysis. We are not using Linux on our product, but a much smaller operating system.
+
+Are mobile phone applications under your definition of "embedded systems"? There is a high demand for mobile applications.
+
+I would reconsider embedded systems, because the field is a lot larger than telecom (for example, medical, aerospace and mobile phones).
+
+Share
+Improve this answer
+Follow
+edited Apr 5 at 14:22
+user avatar
+Peter Mortensen
+1,01311 gold badge77 silver badges77 bronze badges
+answered Apr 4 at 17:32
+user avatar
+Thomas Matthews
+70333 silver badges77 bronze badges
+Automotive industry use C++? – 
+Pablo H
+ Apr 5 at 13:58
+Add a comment
+
+2
+
+Desktop applications, in particular cross-platform desktop applications, get done with Qt quite a lot. Qt Wikipedia page has a section about Qt in use. There definitely is a C++ developer job market here.
+
+Share
+Improve this answer
+Follow
+answered Apr 5 at 19:20
+user avatar
+hyde
+56966 silver badges1515 bronze badges
+Add a comment
+
+1
+
+Virtual and Augmented Reality Experiences (including, but not limited to, games).
+
+As others have pointed out, Unreal Engine is one of the two main platforms for Game Development; for that reason it is also prominent in Virtual Reality development. It's development language is C++.
+
+VR experiences include - in addition to "normal" games - fitness apps , social environments and increasingly, work environments like Immersed.
+
+Share
+Improve this answer
+Follow
+answered Apr 5 at 14:13
+user avatar
+Stacker Lee
+24111 silver badge44 bronze badges
+Add a comment
+
+0
+
+The two remaining C++ developers I know both work in the space industry. One previously worked for Pixar.
+
+Share
+Improve this answer
+Follow
+edited Apr 6 at 7:11
+user avatar
+Peter Mortensen
+1,01311 gold badge77 silver badges77 bronze badges
+answered Apr 5 at 13:42
+user avatar
+kpollock
+31111 silver badge55 bronze badges
+Add a comment
+
+0
+
+SpaceX uses C++ heavily for their spacecraft/rocket software. I believe this is due to hardware constraints which is in-turn due to the mass constraints of spaceflight.
+
+Share
+Improve this answer
+Follow
+answered Apr 6 at 19:35
+user avatar
+johnDanger
+50711 gold badge33 silver badges88 bronze badges
+Add a comment
+Highly active question. Earn 10 reputation (not counting the association bonus) in order to answer this question. The reputation requirement helps protect this question from spam and non-answer activity.
+Not the answer you're looking for? Browse other questions tagged software-industry job-search career-development .
+Featured on Meta
+How might the Staging Ground & the new Ask Wizard work on the Stack Exchange...
+The Workplace is hitting the big ten year mark! Give your blog input here!
+Related
+7
+How can I make it known on my resume that I want out of the gaming industry?
+88
+Is it acceptable to collaborate with coworkers on a project outside work to prove something to our manager?
+183
+How to stop an employee from holding the company hostage?
+36
+Being forced to give an expert opinion in an area that I'm not familiar with or qualified in
+Hot Network Questions
+How can I get good fit for polar data
+How to start an industrial revolution without textiles
+I won $9500 in a game. Now they're asking me to send it back via different means, promising me more money if I do so
+Is “I'm working totes” new slang?
+If balls are replaced with rectangles, does Lebesgue's differentiation theorem hold?
+Movie about good and bad "angels" with machine guns and black coats that came down to earth to kill each other?
+Estimating meteorological visibility from air chemical and particulate composition
+Credit card replaced due to fraud, new card has exactly the same information as the old one. How does this address the fraud risk?
+General Manager avoids signing agreement and is never present
+Identification of a laptop using a spoofed WiFi MAC address
+How would the Concept of "Schadenfreude" be Expressed in Latin?
+Is it normal for Decora light switches to break apart?
+Can I ask for free upgrade at checkin or at gate?
+Why are my Maori units automatically healing?
+Cat won't let us close door on carrier during training
+How do you scan multiple subnets using Nmap?
+Latex matrix left entries
+What is this beast in Thor: Love and Thunder trailer?
+Boost voltage without switching
+How are char arrays / strings stored in binary files?
+What modern-day object could a magic wand be disguised as?
+What are the mechanics for attacking a creature grappled by someone else?
+Is a 6 hours in 1 day roadtrip too much for a toddler?
+x86 memory alignment
+THE WORKPLACE
+Tour
+Help
+Chat
+Contact
+Feedback
+COMPANY
+Stack Overflow
+Teams
+Advertising
+Collectives
+Talent
+About
+Press
+Legal
+Privacy Policy
+Terms of Service
+Cookie Settings
+Cookie Policy
+STACK EXCHANGE NETWORK
+Technology
+Culture & recreation
+Life & arts
+Science
+Professional
+Business
+API
+Data
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+Site design / logo © 2022 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2022.4.21.42004
+
+ 

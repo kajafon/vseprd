@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import './wordpredictor.css';
-import {Input, Button, Tooltip, Space, Typography, Modal} from 'antd'
+import {Input, Button, Tooltip, Space, Typography, Select} from 'antd'
 
 
 function hasValue(what) {
@@ -10,7 +10,8 @@ function hasValue(what) {
 }
 
 const PREMIS_LENGTH = 3
-
+const corpuses = {"saristina":"Šariština", "dennikn":"Spisovná slovenčina", "stackoverflow":"Angličtina"}
+const corpusKeys = Object.keys(corpuses);
 
 export default class WordPredictor extends React.Component {
 
@@ -28,16 +29,27 @@ export default class WordPredictor extends React.Component {
             numberOfLetters: 8,
             showInput: false,
             error: null,
-            selected: []
+            selected: [],
+            selectedCorpus: corpusKeys[0],
         }
     }
 
     componentDidMount() {
         console.log("... component did mount")
-        fetch("corpus")
+        this.loadCorpus()
+    }
+
+    loadCorpus(corpusName)
+    {
+        if (!corpusName) {
+            corpusName = this.state.selectedCorpus
+        } else {
+            this.setState({selectedCorpus: corpusName})
+        }
+
+        fetch("corpus/" + corpusName)
             .then(response => response.json())
             .then((result)=>this.process(result.corpus))
-        
     }
         
     removeNonChars(input, forbidden){
@@ -65,7 +77,7 @@ export default class WordPredictor extends React.Component {
         console.log("processing vocabulary...")
         // console.log("--->" + vocabularyText.substring(0,300))
 
-        let voca = this.removeNonChars(vocabularyText, "€@#$%^&*/?-–„“.,:;'\"{}[]()\n\r1234567890")
+        let voca = this.removeNonChars(vocabularyText, "€@#$%^&*/?!-–„“.,:;'\"{}[]()\n\r1234567890")
         let corpus = voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
 
         this.setState({vocabularyText: voca, corpus: corpus})
@@ -219,6 +231,7 @@ export default class WordPredictor extends React.Component {
             let i = Math.floor(Math.random()*followingLetters.length)
             let letter = followingLetters[i]
             console.log( (isTerminal ? "T " : "") + "{" + premise + "} -> '" + letter + "', option count: " + followingLetters.length)
+            stepsCount += followingLetters.length
            
             result += letter
 
@@ -323,12 +336,21 @@ export default class WordPredictor extends React.Component {
             lastWordGui = (    
                 <div className="active-word" onClick={()=>this.onSelect(r)}>
                     <span style={{fontSize: "30px"}}>
-                        {r.result}
+                        <Typography.Title level={2}>{r.result}</Typography.Title>
                     </span>
                     {/* (c:{r.creativity}, t:{r.terminalQuality}, p:{r.prefixMatched.toString()}) */}
                 </div>
             )
         }
+
+        let corpusBtns = corpusKeys.map((c) => {
+            return (<Button 
+                className='round-btn'
+                onClick={()=>{this.loadCorpus(c)}}
+            >
+                {corpuses[c]}
+            </Button>)
+        })
 
         return (
             <div>
@@ -340,9 +362,11 @@ export default class WordPredictor extends React.Component {
                 <Typography.Title className="center title" level={1}>VŠEPRD</Typography.Title>
                 <div className='center'>
                     <Typography.Title type="secondary" className="center description" level={5}>
-                        Vygeneruj si nové slová podľa textu. Text, podľa ktorého sa slová tvoria už je zadaný
-                        a hneď si to možeš vyskúšať, ale môžeš vložiť aj svoj vlastný. Tlačidlom so 
-                        zobáčikom odkryješ vstupný formulár.
+                        Vygeneruj si nové slová podľa textu. Pravidlá tvorby slov sa extrahujú zo vstupného
+                        textu. Je k dispozícii zopár vzorových, ale môžeš si vložiť aj vlastný. 
+                        V akomkoľvek jazyku. Nové slovo je nové len vzhľadom na vstupný text. Stáva sa,
+                        že sa vytvorí slovo, ktoré sa síce v texte nevyskytlo, aspoň nie v danom tvare, 
+                        ale je to platné slovo v danom jazyku.
                     </Typography.Title>
                 </div>
                 <br/>
@@ -351,50 +375,67 @@ export default class WordPredictor extends React.Component {
                     {this.state.showInput
                         ?
                         <div className='center'>
-                            
-                            <Tooltip title="hide text corpus input">
-                                <Button onClick={()=> this.setState({showInput:false})}>{"<"}</Button>
-                            </Tooltip>
-                            {
-                                this.state.showInput && this.state.showProcessed
-                                ?
-                                    <div className='pale-text some-space left-align'>Mám to. Môžeš generovať slová.</div>
-                                : null
-                            }
-                            <Input.TextArea className="some-space" rows="20" cols="10" value={this.state.vocabularyText} 
-                                    onChange={(e)=> {
-                                        this.setState({vocabularyText: e.target.value})
-                                        this.process(e.target.value)
-                                        if (this.state.showInput) {
-                                            this.setState({showProcessed: true})
-                                        }
-                                    }}
-                            />
+                            <div className='input-container'>
+                                <Space>
+                                    <Tooltip title="Zbaliť">
+                                        <Button onClick={()=> this.setState({showInput:false})}>{"<"}</Button>
+                                    </Tooltip>
+                                    { corpusBtns }                                
+                                </Space>
+                                {
+                                    this.state.showInput && this.state.showProcessed
+                                    ?
+                                        <div className='pale-text some-space left-align'>Mám to. Môžeš generovať slová.</div>
+                                    : null
+                                }
+                                <Input.TextArea className="some-space corpus-input" value={this.state.vocabularyText} 
+                                        onChange={(e)=> {
+                                            this.setState({vocabularyText: e.target.value, selectedCorpus: null})
+                                            this.process(e.target.value)
+                                            if (this.state.showInput) {
+                                                this.setState({showProcessed: true})
+                                            }
+                                        }}
+                                />
+                            </div>
                         </div>
                         : null
                     }
                     
                     <div className='center'>
-                        {this.state.predicates != null
-                        ?
-                            <span>
-                                <Space>
-                                    {
-                                      !this.state.showInput   
-                                      ?                             
-                                        <Tooltip title="show text corpus input">
-                                            <Button onClick={()=> this.setState({showInput:true, showProcessed: false})}>{">"}</Button>
-                                        </Tooltip>
-                                      : null
-                                    }
-                                    <Input placeholder="Začiatok slova ..." className="input-main" value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
-                                    <Input prefix="Počet znakov" className="input-main" value={this.state.numberOfLetters} onChange={(e) => this.onCharNumChanged(e.target.value)}/>
-                                    <Button type="primary" onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Daj mi nové slovo!</Button>
-                                </Space>
-                            </span>
-                        :
-                            null
-                        } 
+                        <div className='left-align input-container'>
+                            {
+                                this.state.selectedCorpus
+                                ?                            
+                                    <div className='pale-text right-align'
+                                        onClick={()=> this.setState({showInput: true})} 
+                                    >
+                                        <span className='active-word'>[{corpuses[this.state.selectedCorpus]}]</span>
+                                    </div>
+                                :   null
+                            }
+
+                            {this.state.predicates != null
+                            ?
+                                <span>
+                                    <Space>
+                                        {
+                                        !this.state.showInput   
+                                        ?                             
+                                            <Tooltip title="Rozbaliť">
+                                                <Button onClick={()=> this.setState({showInput:true, showProcessed: false})}>{">"}</Button>
+                                            </Tooltip>
+                                        : null
+                                        }
+                                        <Input placeholder="Začiatok slova ..." className="input-main" value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
+                                        <Input prefix="Počet znakov" className="input-main" value={this.state.numberOfLetters} onChange={(e) => this.onCharNumChanged(e.target.value)}/>
+                                        <Button type="primary" onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Daj mi nové slovo!</Button>
+                                    </Space>
+                                </span>
+                            :
+                                null
+                            } 
+                        </div>
                     </div>
                     <br/>
                     <div>
@@ -407,7 +448,7 @@ export default class WordPredictor extends React.Component {
                             ?
                                 <div className='some-space'>
                                     <Typography.Title type="secondary" level={5} className="bottom-space">
-                                       Váš výber:
+                                       Tvoj výber:
                                     </Typography.Title>
                                     <div className='selected-words'>
                                         <div className='bottom-space'>
@@ -423,8 +464,6 @@ export default class WordPredictor extends React.Component {
                             : null
                         }
 
-                        <br/>
-                        
                         <div>
                             {
                                 this.state.results.length > 1
@@ -444,9 +483,11 @@ export default class WordPredictor extends React.Component {
                                                         <span style={{fontSize: "20px"}}>
                                                             {result.result}
                                                         </span>
-                                                        {/* <span style={{marginLeft:"5px"}}>
-                                                            (c:{result.creativity}, t:{result.terminalQuality}, p:{result.prefixMatched.toString()})
-                                                        </span> */}
+                                                        {
+                                                            i < this.state.results.length-1
+                                                            ? <span>&nbsp;&nbsp;&nbsp;</span>
+                                                            : null
+                                                        }
                                                     </span>
                                                 )
                                             })
