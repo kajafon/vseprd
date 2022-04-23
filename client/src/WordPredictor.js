@@ -3,11 +3,8 @@ import './App.css';
 import React from 'react';
 import './wordpredictor.css';
 import {Input, Button, Tooltip, Space, Typography, Select} from 'antd'
+import Languager from './Languager';
 
-
-function hasValue(what) {
-    return what !== null && what !== undefined
-}
 
 const PREMIS_LENGTH = 3
 const corpuses = {"saristina":"Šariština", "dennikn":"Spisovná slovenčina", "stackoverflow":"Angličtina"}
@@ -18,13 +15,9 @@ export default class WordPredictor extends React.Component {
     constructor(props) {
         super(props)
         console.log("constructor")
+        this.languager = new Languager(PREMIS_LENGTH)
         this.state = {
             prefix: "",
-            vocabularyText: "",
-            corpus: [],
-            predicates: {},
-            starters: [],
-            terminalPredicates: {},
             results:[],
             numberOfLetters: 8,
             showInput: false,
@@ -52,203 +45,15 @@ export default class WordPredictor extends React.Component {
             .then((result)=>this.process(result.corpus))
     }
         
-    removeNonChars(input, forbidden){
-        let result = []
-
-        for (let i=0; i<input.length; i++) {
-            let isOk = true
-            for(let j=0; j<forbidden.length; j++) {
-                if (input[i] === forbidden[j]) {
-                    isOk = false
-                    break;
-                }
-            }
-
-            if (isOk) {
-                result.push(input[i])
-            } else {
-                result.push(" ")
-            }
-
-        }
-
-        return result.join('')
-    }
-
-    process(vocabularyText) {
-        console.log("processing vocabulary...")
-        // console.log("--->" + vocabularyText.substring(0,300))
-
-        let voca = this.removeNonChars(vocabularyText, "€@#$%^&*/?!-–„“.,:;'\"{}[]()\n\r1234567890")
-        let corpus = voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
-
-        this.setState({vocabularyText: voca, corpus: corpus})
-
-        // for(let i=0; i<corpus.length; i++) {
-        //     console.log("-->\"" + corpus[i] + "\"")
-        // }
-
-        let predicates = {}
-        let starters = []
-        let terminalPredicates = {}
-
-        let secondLevelNodeCount = 0;
-        let firstLevelNodeCount = 0;
-
-        for (let j=0; j<corpus.length; j++) {
-            let word = corpus[j]
-            for (let i=1; i<word.length; i++) {
-
-                let closure = word[i]
-
-                let indx = i - PREMIS_LENGTH
-                if (indx < 0) {
-                    indx = 0
-                }
-
-                let premise = word.substring(indx, i)
-
-                {
-                    let closureCounts = predicates[premise]
-                    if (!hasValue(closureCounts)) {
-                        predicates[premise] = closureCounts = {}
-                        firstLevelNodeCount++
-                        if (i < PREMIS_LENGTH) {
-                            starters.push(premise)
-                        }
-                    }
-
-                    if (!closureCounts[closure]) {
-                        closureCounts[closure] = 0
-                        secondLevelNodeCount++
-                    }
-                    closureCounts[closure] += 1
-                }
-
-                /* terminals */
-                if (i === word.length-1) {
-                    let closureCounts = terminalPredicates[premise]
-                    if (!hasValue(closureCounts)) {
-                        terminalPredicates[premise] = closureCounts = {}
-                        firstLevelNodeCount++
-                    }
-    
-                    if (!closureCounts[closure]) {
-                        closureCounts[closure] = 1
-                        secondLevelNodeCount++
-                    }
-                    // closureCounts[closure] += 1
-                }
-            }
-        }
-
-        /* normalise */
-
-        this.normalize(predicates)
-        this.normalize(terminalPredicates)
-
-        this.setState({predicates: predicates, starters: starters, terminalPredicates: terminalPredicates})
-
-        console.log("done. src word count:" + corpus.length + ", node count: " + firstLevelNodeCount + ", second level node count:" + secondLevelNodeCount + ", starters count: " + starters.length)
-    }
-
-    normalize(predicates) {
-        let predicateEntries = Object.entries(predicates)
-
-        for (const [premise, collection] of predicateEntries) 
-        { 
-            let max = 0
-            Object.keys(collection).forEach(key => {
-                let count = collection[key]
-                let newVal = Math.log(count + 1)
-                collection[key] = newVal
-                if (newVal > max) {
-                    max = count
-                }
-            })
-
-            Object.keys(collection).forEach(key => {
-                collection[key] = collection[key] / max
-            })
-        }
-    }
-
-    generate(letterCount, prefix) {
-        if (this.state.starters.length === 0) {
-            console.log("empty corpus. not generating")
-            return null
-        }
-        console.log("\n==== generate " + letterCount + " letter word.")
-        let result = ""
-   
-        let stepsCount = 0
-        let creativity = 0
-        let terminalQuality = 2
-
-        let premise = null
-        let prefixMatched = true
-        
-        if (prefix) {
-            result = prefix
-            if (prefix.length > PREMIS_LENGTH) {
-                premise = prefix.substring(prefix.length - PREMIS_LENGTH)
-            } else {
-                premise = prefix
-            }
-        } else {
-            let rnd = Math.floor(Math.random() * this.state.starters.length)
-            premise = this.state.starters[rnd]
-            prefixMatched = false
-            console.log("starter: " + rnd + " -> '" + premise + "'" )
-            result = premise
-        }
-
-        stepsCount++
-
-        while(result.length < letterCount) {
-            let closures = null 
-            let isTerminal = false
-            if (result.length === letterCount - 1)
-            {
-                isTerminal = true
-                closures = this.state.terminalPredicates[premise]    
-                if (!hasValue(closures)) {
-                    console.log("~~~ premise '" + premise + "' has no terminal closure")
-                    terminalQuality--
-                }
-            } 
-            
-            if (closures == null){
-                isTerminal = false
-                closures = this.state.predicates[premise]    
-            }
-
-            if (!hasValue(closures)) {
-                console.log("~~~ premise '" + premise + "' has no closure")
-                terminalQuality--
-                break
-            }
-
-            let followingLetters = Object.keys(closures)
-            let i = Math.floor(Math.random()*followingLetters.length)
-            let letter = followingLetters[i]
-            console.log( (isTerminal ? "T " : "") + "{" + premise + "} -> '" + letter + "', option count: " + followingLetters.length)
-            stepsCount += followingLetters.length
-           
-            result += letter
-
-            let indx = result.length - PREMIS_LENGTH
-            if (indx < 0) {
-                indx = 0
-            }
-            premise = result.substring(indx, indx + PREMIS_LENGTH)
-        }
-        return {result: result, creativity: creativity / stepsCount, terminalQuality: terminalQuality, prefixMatched: prefixMatched }
+    process(inputText) {
+        this.languager.process(inputText)
+        console.log("wp: starters len:" + this.languager.startersLen())
+        this.forceUpdate()
     }
 
     onGenerate(count, prefix)
     {
-        if (this.state.starters.length === 0) {
+        if (!this.languager.isReady()) {
             this.setState({error: "Nie je podľa čoho slová vytvoriť. Vlož nejaký text."})
             return
         }
@@ -256,18 +61,17 @@ export default class WordPredictor extends React.Component {
         this.setState({error: null})
         let result = null
         for (let i=20; i>0; i--) {
-            result = this.generate(count, prefix)
+            result = this.languager.generate(count, prefix)
             if (result === null) {
                 break
             }
-            const finder = function(val, i) { return val === result.result }
-            let exist = this.state.corpus.findIndex(finder)
-            if (exist >= 0) {
+            
+            if (this.languager.isInCorpus(result.result)) {
                 console.log(result.result + "---> is in corpus. skipping")
                 result = null
                 continue
             }
-            exist = this.state.results.findIndex((val, i) => val.result === result.result)
+            let exist = this.state.results.findIndex((val, i) => val.result === result.result)
             if (exist >= 0) {
                 console.log(result.result + "---> is already found. skipping")
                 result = null
@@ -321,6 +125,7 @@ export default class WordPredictor extends React.Component {
         this.state.selected.push(result)
         this.setState({selected: this.state.selected})
     }
+
     onCharNumChanged(val) {
         let num = parseInt(val)
         if (isNaN(num)) {
@@ -328,6 +133,7 @@ export default class WordPredictor extends React.Component {
         }
         this.setState({numberOfLetters: num})
     }
+
     render() {
 
         let lastWordGui = null
@@ -356,7 +162,6 @@ export default class WordPredictor extends React.Component {
 
         return (
             <div>
-                <br/>
                 <br/>
                 <br/>
                 <br/>
@@ -417,7 +222,7 @@ export default class WordPredictor extends React.Component {
                                 :   null
                             }
 
-                            {this.state.predicates != null
+                            {this.languager.isReady()
                             ?
                                 <span>
                                     <Space>
@@ -430,7 +235,7 @@ export default class WordPredictor extends React.Component {
                                         : null
                                         }
                                         <Input placeholder="Začiatok slova ..." className="input-main" value={this.state.prefix} onChange={(e) => this.setState({prefix: e.target.value})}/>
-                                        <Input prefix="Počet znakov" className="input-main" value={this.state.numberOfLetters} onChange={(e) => this.onCharNumChanged(e.target.value)}/>
+                                        <Input suffix="znakov" className="input-main" value={this.state.numberOfLetters} onChange={(e) => this.onCharNumChanged(e.target.value)}/>
                                         <Button type="primary" onClick={()=> this.onGenerate(this.state.numberOfLetters, this.state.prefix)}>Daj mi nové slovo!</Button>
                                     </Space>
                                 </span>
