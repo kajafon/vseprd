@@ -45,7 +45,7 @@ export default class WordPredictor extends React.Component {
             .then(response => response.json())
             .then((result)=> {
                 this.process(result.corpus)
-                this.setState({vocabularyText: result.corpus})
+                this.setState({vocabularyText: this.languager.getVocabularyText()})
             })
     }
         
@@ -202,8 +202,8 @@ export default class WordPredictor extends React.Component {
                                 }
                                 <Input.TextArea className="some-space corpus-input" value={this.state.vocabularyText} 
                                         onChange={(e)=> {
-                                            this.setState({vocabularyText: e.target.value, selectedCorpus: null})
                                             this.process(e.target.value)
+                                            this.setState({vocabularyText: this.languager.getVocabularyText(), selectedCorpus: null})
                                             if (this.state.showInput) {
                                                 this.setState({showProcessed: true})
                                             }

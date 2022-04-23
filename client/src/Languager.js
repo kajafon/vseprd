@@ -229,45 +229,6 @@ export default class Languager {
 
     }
 
-    extraxtSuffixesWithRadixes(radixes) {
-        let suffixesDict = {}
-
-        for(let ri = 0; ri < radixes.length; ri++) {
-            let entry = radixes[ri]
-            for (let wi=0; wi < entry.words.length; wi++) {
-                let w = entry.words[wi]
-                let indx = w.indexOf(entry.core)
-
-                if (indx < 0) {
-                    throw new Error("co to za mariju!!!")
-                }
-
-                if (indx + entry.core.length < w.length) {
-                    let suffix = w.substring(indx + entry.core.length)
-                    let sufEntry = suffixesDict[suffix]
-                    if (!hasValue(sufEntry)) {
-                        suffixesDict[suffix] = sufEntry = {count: 0, words:[]}
-                    }
-                    sufEntry.count++
-                    sufEntry.words.push(w)
-                }
-            }
-        }
-
-        let suffixes = []
-        let keys = Object.keys(suffixesDict) 
-        for (let i=0; i<keys.length; i++) {
-            let entry = suffixesDict[keys[i]]
-            suffixes.push({suffix: keys[i], factor: entry.count / radixes.length, words: entry.words})
-        }
-
-        suffixes.sort((s1,s2) => {
-            return s2.factor - s1.factor
-        })
-
-        this.setState({suffixes: suffixes})
-    }
-
     getMaxComonCore(w1, w2)
     {
         let maxCore = "";
@@ -312,6 +273,10 @@ export default class Languager {
         Object.assign(this.state, newState)
     }
 
+    getVocabularyText() {
+        return this.state.vocabularyText
+    }
+
     removeNonChars(input, forbidden){
         let result = []
 
@@ -336,6 +301,8 @@ export default class Languager {
     }
 
     processInputText(input){
+        console.log("processing vocabulary...")
+
         let result = []
 
         const sentenceTerminals = "?!.:;\n\r(){}[]/„“”'\""
@@ -343,14 +310,14 @@ export default class Languager {
 
         let sentences = []
         let sentence = []  
-        let words = []
+        let corpus = []
 
         let wordChars = []
 
         let terminateWord = (endOfSentence) => {
             if (wordChars.length > 0) {
                 let word = wordChars.join("")
-                words.push(word)
+                corpus.push(word)
                 sentence.push(word)
                 wordChars.splice(0, wordChars.length)
             }
@@ -376,19 +343,7 @@ export default class Languager {
         }
 
         terminateWord(true)
-
-        return {corpus: words, sentences: sentences}
-    }
-
-    process(vocabularyText) {
-        console.log("processing vocabulary...")
-        // console.log("--->" + vocabularyText.substring(0,300))
-
-        // let voca = this.removeNonChars(vocabularyText, "…€@#$%^&*/?!-–„“”.,:;'\"{}[]()\n\r1234567890")
-        //voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
-
-        let {corpus, sentences } = this.processInputText(vocabularyText) 
-
+        
         corpus.sort((c1,c2) => {
             return c1.localeCompare(c2)
         })
@@ -399,8 +354,6 @@ export default class Languager {
         for (let i = 1; i<corpus.length; i++) {
             if (corpus[i] != corpus[i-1]) {
                 filteredCorpus.push(corpus[i])
-            } else {
-                console.log("~" + corpus[i])
             }
         }
 
@@ -408,14 +361,24 @@ export default class Languager {
 
         corpus = filteredCorpus
 
-        this.setState({vocabularyText: vocabularyText, corpus: corpus, sentences: sentences})
+        let processedInputText = sentences.map((s) => s.join(" ")).join(". ")
+        this.setState({vocabularyText: processedInputText, corpus: corpus, sentences: sentences})
+    }
 
+    extractWordPredicates() {
+        // let voca = this.removeNonChars(vocabularyText, "…€@#$%^&*/?!-–„“”.,:;'\"{}[]()\n\r1234567890")
+        //voca.split(" ").filter(w => w.length > 1).map(w => w.toLowerCase())
+
+        console.log("extracting word predicates...")
+ 
         let predicates = {}
         let starters = []
         let terminalPredicates = {}
 
         let secondLevelNodeCount = 0;
         let firstLevelNodeCount = 0;
+
+        let corpus = this.state.corpus
 
         for (let j=0; j<corpus.length; j++) {
             let word = corpus[j]
@@ -494,6 +457,11 @@ export default class Languager {
                 collection[key] = collection[key] / max
             })
         }
+    }
+
+    process(inputText) {
+        this.processInputText(inputText)
+        this.extractWordPredicates()
     }
 
     /* generates a random word  based on predicates, starters and terminals*/
