@@ -4,6 +4,7 @@ import React from 'react';
 import './wordpredictor.css';
 import {Input, Button, Tooltip, Space, Typography, Select} from 'antd'
 import Languager from './Languager';
+import SuffixLab from './SuffixLab';
 
 
 const PREMIS_LENGTH = 3
@@ -42,7 +43,10 @@ export default class WordPredictor extends React.Component {
 
         fetch("corpus/" + corpusName)
             .then(response => response.json())
-            .then((result)=>this.process(result.corpus))
+            .then((result)=> {
+                this.process(result.corpus)
+                this.setState({vocabularyText: result.corpus})
+            })
     }
         
     process(inputText) {
@@ -164,6 +168,7 @@ export default class WordPredictor extends React.Component {
             <div>
                 <br/>
                 <br/>
+                <SuffixLab languager={this.languager}/>
                 <br/>
                 <br/>
                 <Typography.Title className="center title" level={1}>VŠEPRD</Typography.Title>
